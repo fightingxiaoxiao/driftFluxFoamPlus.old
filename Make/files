@@ -1,0 +1,5 @@
+incompressibleTwoPhaseInteractingMixture/incompressibleTwoPhaseInteractingMixture.C
+compressibleTurbulenceModels.C
+driftFluxFoamPlus.C
+
+EXE = $(FOAM_APPBIN)/driftFluxFoamPlus

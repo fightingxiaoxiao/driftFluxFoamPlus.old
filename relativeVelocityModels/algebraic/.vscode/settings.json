@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "blockMeshDict": "OpenFOAM",
+        "fvOptions": "OpenFOAM",
+        "algebraic.C": "cpp"
+    }
+}

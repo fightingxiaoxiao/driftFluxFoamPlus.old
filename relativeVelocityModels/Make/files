@@ -1,0 +1,6 @@
+relativeVelocityModel/relativeVelocityModel.C
+simple/simple.C
+general/general.C
+algebraic/algebraic.C
+
+LIB = $(FOAM_LIBBIN)/libdriftFluxRelativeVelocityModels
