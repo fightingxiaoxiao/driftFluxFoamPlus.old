@@ -83,32 +83,31 @@ void Foam::relativeVelocityModels::algebraic::correct()
         }
     }
 
-    //volVectorField a();
+    Info << "max fd: " << max(fd) << endl;
+    Info << "min fd: " << min(fd) << endl;
+
     const meshObjects::gravity& g = meshObjects::gravity::New(mixture_.U().db().time());
 
-    // Info << g.value() << endl;
-    /*
-    meshObjects::gravity g
-    (
-        mixture_.U().mesh().lookupObject<meshObjects::gravity>("g")
-    );
-    */
     volVectorField a(g - mixture_.U()*fvc::div(mixture_.U()) - fvc::ddt(mixture_.U()));
 
-    volVectorField Udc((rhod_-rho())*pow(mixture_.dd(),2)/18/(mixture_.nucModel().nu()*rhoc_)/fd*a);
+    volVectorField Udc((rhod_-rho()) * sqr(mixture_.dd()) / (mixture_.nucModel().nu() * rhoc_) / 18. / fd * a);
 
     const volScalarField &nut = mixture_.U().mesh().lookupObject<volScalarField>("nut");
 
     if(turbulenceCorrect_)
     {
-        Udc -= nut*(fvc::grad(alphad_)/alphad_ - fvc::grad(alphac_)/alphac_);
+        Udc -= nut * (fvc::grad(alphad_)/(alphad_+1e-8) - fvc::grad(alphac_)/(alphac_+1e-8));
     }
     
     //volScalarField tau_p(rhod_* mixture_.dd() * mixture_.dd() / 18 / (mixture_.nucModel().nu() * rhoc_));
 
     //volScalarField K(3 / 4 / mixture_.dd() * rhoc_ * Cd * pow(alphac_, -1.65) * (1 - alphac_) * mag(Udm_ - Ucm));
 
-    Udm_ = alphac_ * Udc;
+    Udm_ = betac / rho() * Udc;
+    //Udm_ = Udc - alphac_ *Ucm;
+
+    Info << "max Udm: " <<max(Udm_) << endl;
+    Info << "min Udm: " <<min(Udm_) << endl;
 }
 
 

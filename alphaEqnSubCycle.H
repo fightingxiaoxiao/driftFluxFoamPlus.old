@@ -48,15 +48,19 @@
     // Apply the diffusion term separately to allow implicit solution
     // and boundedness of the explicit advection
     {
-        fvScalarMatrix alpha1Eqn
-        (
-            fvm::ddt(alpha1) - fvc::ddt(alpha1)
-          - fvm::laplacian(turbulence->nut(), alpha1)
-        );
+        if(turbCorr)
+        {
+            fvScalarMatrix alpha1Eqn
+            (
+                fvm::ddt(alpha1) - fvc::ddt(alpha1)
+              - fvm::laplacian(turbulence->nut(), alpha1)
+            );
 
-        alpha1Eqn.solve(mesh.solver("alpha1Diffusion"));
+            alpha1Eqn.solve(mesh.solver("alpha1Diffusion"));
 
-        alphaPhi += alpha1Eqn.flux();
+            alphaPhi += alpha1Eqn.flux();
+        }
+
         alpha2 = 1.0 - alpha1;
 
         Info<< "Phase-1 volume fraction = "
